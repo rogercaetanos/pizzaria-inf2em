@@ -3,6 +3,7 @@ package com.itb.inf2em.pizzaria.services;
 import com.itb.inf2em.pizzaria.exceptions.BadRequest;
 import com.itb.inf2em.pizzaria.exceptions.NotFound;
 import com.itb.inf2em.pizzaria.model.Categoria;
+import com.itb.inf2em.pizzaria.model.Produto;
 import com.itb.inf2em.pizzaria.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,16 +39,35 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public List<Categoria> listarTodasCategorias() {
-        return null;
+
+        return categoriaRepository.findAll();
     }
 
     @Override
     public Categoria listarCategoriaPorId(Long id) {
-        return null;
-    }
+        try{
+            return categoriaRepository.findById(id).get();
+        } catch (Exception ex) {
+            throw new NotFound("Categoria não encontrada com o id " + id);
+        }
 
+    }
     @Override
     public Categoria atualizarCategoria(Categoria categoria, Long id) {
-        return null;
-    }
+        if(!categoria.validarCategoria()){
+            throw new BadRequest(categoria.getMensagemErro());
+        }
+        if(!categoriaRepository.existsById(id)){
+            throw new NotFound("Categoria não encontrada com o id " + id);
+        }
+        Categoria categoriaDb = categoriaRepository.findById(id).get();
+        categoriaDb.setNome(categoria.getNome());
+        categoriaDb.setDescricao(categoria.getDescricao());
+
+        return categoriaRepository.save(categoriaDb); // save: Atualiza quando já existe o registro no banco de dados.
+     }
+
 }
+
+
+

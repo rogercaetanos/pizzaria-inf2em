@@ -8,6 +8,7 @@ package com.itb.inf2em.pizzaria.controller;
 // @PutMapping     :  Representa a complementação da url principal, EXCLUSIVO PARA ATUALIZAR (UPDATE)
 // @DeleteMapping  :  Representa a complementação da url principal, EXCLUSIVO PARA DELETAR (DELETE)
 
+import com.itb.inf2em.pizzaria.exceptions.BadRequest;
 import com.itb.inf2em.pizzaria.model.Categoria;
 import com.itb.inf2em.pizzaria.services.CategoriaService;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +38,26 @@ public class FuncionarioController {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/funcionario/categoria").toUriString());
         return ResponseEntity.created(uri).body(categoriaService.salvarCategoria(categoria));
     }
+
+    //@PathVariable :  Representa os parâmetros passados pela url "variáveis"
+
+    @GetMapping("/categoria/{id}")
+    public ResponseEntity<Categoria>listarCategoriaPorId(@PathVariable(value = "id") String id) {
+        try{
+            return ResponseEntity.ok().body(categoriaService.listarCategoriaPorId(Long.parseLong(id)));
+        }catch (NumberFormatException ex) {
+            throw new BadRequest("'" + id + "' não é um número inteiro válido. Por favor, forneça um valor inteiro, como 5. ");
+        }
+    }
+
+    @PutMapping("/categoria/{id}")
+    public ResponseEntity<Categoria> atualizarCategoria(@RequestBody Categoria categoria, @PathVariable(value = "id") String id) {
+        try{
+            return ResponseEntity.ok().body(categoriaService.atualizarCategoria(categoria, Long.parseLong(id)));
+        }catch (NumberFormatException ex) {
+            throw new BadRequest("'" + id + "' não é um número inteiro válido. Por favor, forneça um valor inteiro, como 5. ");
+        }
+    }
+
 
 }

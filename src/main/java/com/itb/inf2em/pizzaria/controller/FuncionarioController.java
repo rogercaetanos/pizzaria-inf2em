@@ -59,5 +59,16 @@ public class FuncionarioController {
         }
     }
 
-
+    // Object: Representa "QUALQUER TIPO DE (OBJETO): Categoria, Produto, Usuario etc... inclusive uma String"
+    @DeleteMapping("/categoria/{id}")
+    public ResponseEntity<Object> deletarCategoria(@PathVariable(value = "id") String id) {
+        try{
+           if(categoriaService.deletarCategoria(Long.parseLong(id))){
+               return ResponseEntity.ok().body("Categoria com o id " + id + " excluída com sucesso");
+           }
+        }catch (NumberFormatException ex) {
+            throw new BadRequest("'" + id + "' não é um número inteiro válido. Por favor, forneça um valor inteiro, como 5. ");
+        }
+        return ResponseEntity.ok().body("Não foi possível a exclusão da categoria com o id " + id );
+    }
 }

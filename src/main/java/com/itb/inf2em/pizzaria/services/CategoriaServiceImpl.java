@@ -67,6 +67,30 @@ public class CategoriaServiceImpl implements CategoriaService {
         return categoriaRepository.save(categoriaDb); // save: Atualiza quando já existe o registro no banco de dados.
      }
 
+    @Override
+    public List<Categoria> listarCategoriasAtivas() {
+        return categoriaRepository.listarCategoriasAtivas();
+    }
+
+    @Override
+    public Categoria listarCategoriaAtivaPorId(Long id) {
+        Categoria categoria = categoriaRepository.listarCategoriaAtivaPorId(id);
+        if (categoria == null) {
+            throw new NotFound("Categoria não encontrada com o id " + id);
+        }
+        return categoria;
+    }
+
+    @Override
+    public Categoria deletarCategoriaLogic(Long id) {
+        if(categoriaRepository.existsById(id)) {
+            Categoria categoria = categoriaRepository.findById(id).get();
+            categoria.setCodStatus(false);
+            return categoria;
+        }else {
+            throw new NotFound("Categoria não encontrada com o id " + id);
+        }
+    }
 }
 
 

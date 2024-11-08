@@ -13,4 +13,8 @@ public interface CategoriaService {
     public Categoria listarCategoriaPorId(Long id);
     public Categoria atualizarCategoria(Categoria categoria, Long id);
 
+    public List<Categoria> listarCategoriasAtivas();
+    public Categoria listarCategoriaAtivaPorId(Long id);
+    public Categoria deletarCategoriaLogic(Long id);
+
 }

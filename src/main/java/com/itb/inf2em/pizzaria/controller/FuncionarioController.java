@@ -11,6 +11,7 @@ package com.itb.inf2em.pizzaria.controller;
 import com.itb.inf2em.pizzaria.exceptions.BadRequest;
 import com.itb.inf2em.pizzaria.model.Categoria;
 import com.itb.inf2em.pizzaria.services.CategoriaService;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,7 +31,8 @@ public class FuncionarioController {
 
     @GetMapping("/categoria")
     public ResponseEntity<List<Categoria>> listarTodasCategorias() {
-        return ResponseEntity.ok().body(categoriaService.listarTodasCategorias());
+       // return ResponseEntity.ok().body(categoriaService.listarTodasCategorias());
+        return ResponseEntity.ok().body(categoriaService.listarCategoriasAtivas());
     }
 
     @PostMapping("/categoria")
@@ -44,7 +46,8 @@ public class FuncionarioController {
     @GetMapping("/categoria/{id}")
     public ResponseEntity<Categoria>listarCategoriaPorId(@PathVariable(value = "id") String id) {
         try{
-            return ResponseEntity.ok().body(categoriaService.listarCategoriaPorId(Long.parseLong(id)));
+            //return ResponseEntity.ok().body(categoriaService.listarCategoriaPorId(Long.parseLong(id)));
+            return ResponseEntity.ok().body(categoriaService.listarCategoriaAtivaPorId(Long.parseLong(id)));
         }catch (NumberFormatException ex) {
             throw new BadRequest("'" + id + "' não é um número inteiro válido. Por favor, forneça um valor inteiro, como 5. ");
         }
@@ -71,4 +74,16 @@ public class FuncionarioController {
         }
         return ResponseEntity.ok().body("Não foi possível a exclusão da categoria com o id " + id );
     }
+
+
+    @PutMapping("/delete-logic/categoria/{id}")
+    @Transactional
+    public ResponseEntity<Categoria> deletarCategoriaLogic(@PathVariable(value = "id") String id) {
+        try{
+            return ResponseEntity.ok().body(categoriaService.deletarCategoriaLogic(Long.parseLong(id)));
+        }catch (NumberFormatException ex){
+            throw new BadRequest("'" + id + "' não é um número inteiro válido. Por favor, forneça um valor inteiro, como 5. ");
+        }
+    }
+
 }
